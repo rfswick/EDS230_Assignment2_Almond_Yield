@@ -5,4 +5,104 @@ date: "2025-04-11"
 output: html_document
 ---
 
+```{r}
+library(tidyverse)
+```
+
+```{r}
+data <- read.table("clim.txt", header = TRUE, sep = " ")
+
+data <- data %>% 
+  mutate(tavg_c = (tmax_c + tmin_c)/2)
+```
+
+Y = 0.015Tn,2 0.0046T2
+n;2 0:07P1 + 0.0043P2
+1 þ 0:28
+```{r}
+
+```
+
+
+```{r}
+yield <- function(mintemp, precip) {
+  
+  data <- read.table("clim.txt", header = TRUE, sep = " ") %>% 
+    mutate(tavg_c = (tmax_c + tmin_c)/2)
+  
+  mintemp <- data$tmin_c
+  maxtemp <- data$tmax_c
+  avgtemp <- data$tavg_c
+  
+  yieldmin <- -0.015 * mintemp - 0.0046(mintemp^2) - 0.07 * precip + 0.0043(precip^2) + 0.28
+  yieldmax <- -0.015 * maxtemp - 0.0046(maxtemp^2) - 0.07 * precip + 0.0043(precip^2) + 0.28
+  yieldavg -0.015 * avgtemp - 0.0046(avgtemp^2) - 0.07 * precip + 0.0043(precip^2) + 0.28
+  
+  return(result)
+  }
+```
+
+
+```{r}
+yield <- function(avgmintemp, precip) {
+  
+    data <- read.table("clim.txt", header = TRUE, sep = " ")
+    
+    data <- data %>%
+      group_by(month, year) %>%
+      summarise(mon_mintemp = mean(tmin_c, na.rm = TRUE), mon_total_precip = sum(precip)) 
+    
+    for (i in length(data$month)) {
+      yield_anomaly_df <- data.frame()
+      yield_anomaly = -0.015 * data$mon_mintemp - 0.0046((data$mon_mintemp**2)) - 0.07 * data$mon_total_precip + 0.0043((data$mon_total_precip**2)) + 0.28
+      return(min(yield_anomaly))
+    }
+  
+  
+}
+```
+
+```{r}
+# Read in the data from the text file
+data <- read.table("clim.txt", header = TRUE, sep = " ")
+
+# Load necessary package
+library(dplyr)
+
+# Group by month and year and calculate summary statistics. Also, we drop groups afterward.
+data_monthly <- data %>%
+  group_by(month, year) %>%
+  summarise(
+    mon_mintemp = mean(tmin_c, na.rm = TRUE),
+    mon_total_precip = sum(precip, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Compute the yield anomaly for each month using vectorized operations
+data_monthly <- data_monthly %>%
+  mutate(
+    yield_anomaly = -0.015 * mon_mintemp - 0.0046 * (mon_mintemp^2) -
+                    0.07 * mon_total_precip + 0.0043 * (mon_total_precip^2) + 0.28) %>% 
+  mutate(abs_yield_anomaly = abs(yield_anomaly))
+
+# Get the minimum yield anomaly value
+min_yield_anomaly <- min(data_monthly$abs_yield_anomaly, na.rm = TRUE)
+print(min_yield_anomaly)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
