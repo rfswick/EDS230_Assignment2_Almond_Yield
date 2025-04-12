@@ -10,7 +10,7 @@ library(tidyverse)
 ```
 
 ```{r}
-data <- read.table("clim.txt", header = TRUE, sep = " ")
+data <- read.table("data/clim.txt", header = TRUE, sep = " ")
 
 data <- data %>% 
   mutate(tavg_c = (tmax_c + tmin_c)/2)
@@ -27,7 +27,7 @@ n;2 0:07P1 + 0.0043P2
 ```{r}
 yield <- function(mintemp, precip) {
   
-  data <- read.table("clim.txt", header = TRUE, sep = " ") %>% 
+  data <- read.table("data/clim.txt", header = TRUE, sep = " ") %>% 
     mutate(tavg_c = (tmax_c + tmin_c)/2)
   
   mintemp <- data$tmin_c
@@ -46,7 +46,7 @@ yield <- function(mintemp, precip) {
 ```{r}
 yield <- function(avgmintemp, precip) {
   
-    data <- read.table("clim.txt", header = TRUE, sep = " ")
+    data <- read.table("data/clim.txt", header = TRUE, sep = " ")
     
     data <- data %>%
       group_by(month, year) %>%
@@ -64,7 +64,7 @@ yield <- function(avgmintemp, precip) {
 
 ```{r}
 # Read in the data from the text file
-data <- read.table("clim.txt", header = TRUE, sep = " ")
+data <- read.table("data/clim.txt", header = TRUE, sep = " ")
 
 # Load necessary package
 library(dplyr)
