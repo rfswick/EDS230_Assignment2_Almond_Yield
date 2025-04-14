@@ -18,10 +18,6 @@
 
 almond_yield_anomaly <- function(filepath) {
   
-  # This function created by Rachel Swick and Ryan Green
-  # For EDS 230
-  # 4/13/25
-  
   # Read in the data
   data <- read.table(filepath, header = TRUE, sep = " ")
   
