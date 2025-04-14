@@ -70,25 +70,35 @@ data <- read.table("data/clim.txt", header = TRUE, sep = " ")
 library(dplyr)
 
 # Group by month and year and calculate summary statistics. Also, we drop groups afterward.
-data_monthly <- data %>%
+
+data_february <- data %>%
   group_by(month, year) %>%
-  summarise(
-    mon_mintemp = mean(tmin_c, na.rm = TRUE),
-    mon_total_precip = sum(precip, na.rm = TRUE),
-    .groups = "drop"
-  )
+  filter(month == 2) %>% 
+  summarise(mintemp = min(tmin_c, na.rm = TRUE)) %>% 
+  ungroup()
+
+data_january <- data %>%
+  group_by(month, year) %>%
+  filter(month == 1) %>% 
+  summarise(total_precip = sum(precip, na.rm = TRUE)) %>% 
+  ungroup()
+
+data_clim <- left_join(x = data_january, y = data_february, by = "year")
+
 
 # Compute the yield anomaly for each month using vectorized operations
-data_monthly <- data_monthly %>%
-  mutate(
-    yield_anomaly = -0.015 * mon_mintemp - 0.0046 * (mon_mintemp^2) -
-                    0.07 * mon_total_precip + 0.0043 * (mon_total_precip^2) + 0.28) %>% 
-  mutate(abs_yield_anomaly = abs(yield_anomaly))
+data_clim <- data_clim %>%
+  mutate(yield_anomaly = -0.015 * mintemp - 0.0046 * (mintemp^2) - 0.07 * total_precip + 0.0043 * (total_precip^2) + 0.28) 
 
 # Get the minimum yield anomaly value
-min_yield_anomaly <- min(data_monthly$abs_yield_anomaly, na.rm = TRUE)
+min_yield_anomaly <- max(data_clim$yield_anomaly, na.rm = TRUE)
 print(min_yield_anomaly)
 ```
+
+```{r}
+
+```
+
 
 
 
