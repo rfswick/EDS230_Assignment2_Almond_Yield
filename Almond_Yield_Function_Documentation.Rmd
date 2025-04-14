@@ -3,18 +3,21 @@ title: "Almond Yield Function Documentation"
 author: "Rachel Swick and Ryan Green"
 date: "2025-04-11"
 output: html_document
-editor_options: 
-  chunk_output_type: console
 ---
 
+![Almond Yield Diagram](Almond_Yield_Diagram.png)
 
-```{r}
+
+```{r, results = 'hide', warning = FALSE, message =  FALSE}
+# Load packages
+library(tidyverse)
+
 # Import the almond yield function
 source("almond_yield_anomaly.R")
 ```
 
 
-```{r}
+```{r, warning = FALSE, message =  FALSE}
 # Example usage
 almond_yield_anomaly("data/clim.txt")
 ```
