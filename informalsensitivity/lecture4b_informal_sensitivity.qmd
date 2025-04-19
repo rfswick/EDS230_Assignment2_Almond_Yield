@@ -18,11 +18,11 @@ library(ggpubr)
 library(here)
 ```
 
-# Building models with blocks 
+# Building models with blocks
 
 Functions can always embed other functions - and in models the output of one model may be the input to another
 
--   loosely coupled models - output from one becomes input the other, but this step is  necessarily automatic 
+-   loosely coupled models - output from one becomes input the other, but this step is necessarily automatic
 -   fully coupled - models exchange input and outputs (feedback systems) inside a larger wrapper model (think of it as the *meta* model)
 
 ## Example of a loosely coupled model
@@ -35,7 +35,7 @@ First step: diagram of our model
 
 ```{r  out.width="75%", out.height="75%", echo=FALSE }
 library(knitr)
-include_graphics(here("lectures_qmd/img/power_comparison_figure.jpeg" ))
+#include_graphics(here("lectures_qmd/img/power_comparison_figure.jpeg" ))
 ```
 
 ## Defining our boxes/submodels {.scrollable}
@@ -62,8 +62,6 @@ The profit function also 'calls' another function to compute net present value
         -   year
         -   net (profit from energy in that year)
         -   netpre (net present value of that profit)
-
-
 
 ```{r valuep, echo=TRUE}
 source(here("R/compute_NPV.R"))
@@ -93,7 +91,7 @@ ggplot(profit_solar, aes(as.factor(year), netpre, group = year)) +
   labs(y = "Profit in current $", x = "Year")
 ```
 
-## Putting it all together{.scrollable}
+## Putting it all together {.scrollable}
 
 Full picture of power options
 
@@ -117,16 +115,15 @@ Notice that we can 're-use' our functions such as *compute_profit_frompower* for
 
 Lets generate some example output for our reservoir model
 
-In "real" application we'd have flow and heigh measurement
-here we will generate by sampling (think of it as test data)
+In "real" application we'd have flow and heigh measurement here we will generate by sampling (think of it as test data)
 
 ## Code {.scrollable}
 
-- generate sample inputs for each year
-    - corresponding to years that we have power for the solar model
-- generate uncertainty in efficiency
-- run power model for those inputs and parameter uncertainty
-- compute profit from power
+-   generate sample inputs for each year
+    -   corresponding to years that we have power for the solar model
+-   generate uncertainty in efficiency
+-   run power model for those inputs and parameter uncertainty
+-   compute profit from power
 
 (do some data reorganization as we go to make it easier to graph)
 
@@ -181,6 +178,7 @@ names(profit_hydro)
 ```
 
 ## Plot
+
 ```{r powerresp, echo=TRUE}
 # plot
 ggplot(profit_hydro, aes(as.factor(year), netpre, group = year)) +
@@ -188,8 +186,7 @@ ggplot(profit_hydro, aes(as.factor(year), netpre, group = year)) +
   labs(y = "Net Present Value of Power in 1945 Dollars", x = "Year")
 ```
 
-
-## Compare Profit from hydro/reservoir with solar{.scrollable}
+## Compare Profit from hydro/reservoir with solar {.scrollable}
 
 we now have profit_hydro and profit_solar
 
@@ -234,8 +231,9 @@ In your same groups -
 -   Do a simple informal sensitivity analysis of almond yield profit using at least 2 parameters
 
 -   Create 2 graphs
-    - one that shows yield anomaly for each year, accounting for uncertainty in the parameters
-    - one that show how yield anomaly in general vareies with your parameters
+
+    -   one that shows yield anomaly for each year, accounting for uncertainty in the parameters
+    -   one that show how yield anomaly in general vareies with your parameters
 
 -   Write a short paragraph (in a Quatro document) to summarize you interpretation of your model results (e.g what do 'take away' from your model and sensitivity analysis)
 
