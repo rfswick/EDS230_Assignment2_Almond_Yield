@@ -1,6 +1,92 @@
 ---
 title: "Assignment 3: Profit with Almond Yield"
 author: "Rachel Swick & Ryan Green"
+date: 19-Apr-2025
 format: html
 ---
+
+```{r}
+# Load packages
+library(tidyverse)
+
+# Import the almond yield function
+source("almond_yield_anomaly.R")
+```
+
+Develop a profit model for your almond yield
+
+Use your imagination to think about what would make sense
+Make sure you include parameters
+You could assume a baseline profit and then adjust according to the anomaly
+
+As of 2/04/25, California Almonds sell for $2.12 a pound according to the Melo Farming Group.
+70% of almond farms in California are 100 acres or less according to the Almond Board of California.
+According to Fruit Growers Supply, one acre of almond orchard produces 2400 lbs of almonds per year
+
+Parameters
+Current Price of Almonds in dollars: Set default value at $2.12
+Size of Farm in acres: Set default value at 100 acres
+
+Input
+Almond Yield per Acre: Set default value at 2400 lbs of almonds per year (1.2 tons/acre)
+
+Add almond yield anomaly function
+
+Convert pounds to tons, 1 ton is 2000 lbs
+
+
+```{r}
+almond_profit <- function(almond_price = 4240, farm_acreage = 100, acre_yield = 1.2, filepath) {
+  profit = almond_price * farm_acreage * (acre_yield + almond_yield_anomaly(filepath))
+  return(profit)
+}
+```
+
+```{r}
+almond_profit(filepath = "data/clim.txt")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
