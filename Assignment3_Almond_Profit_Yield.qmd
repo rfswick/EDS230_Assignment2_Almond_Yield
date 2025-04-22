@@ -1,7 +1,7 @@
 ---
 title: "Assignment 3: Profit with Almond Yield"
 author: "Rachel Swick & Ryan Green"
-date: 19-Apr-2025
+date: 21-Apr-2025
 format: html
 editor_options: 
   chunk_output_type: console
@@ -10,6 +10,7 @@ editor_options:
 ```{r}
 # Load packages
 library(tidyverse)
+library(ggplot2)
 
 # Import the almond yield function
 source("almond_yield_anomaly.R")
