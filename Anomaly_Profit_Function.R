@@ -45,14 +45,18 @@ almond_yield_year <- function(filepath) {
     select(year, mintemp, total_precip, yield_anomaly)
   
   anomaly <- function(mintemp, total_precip) {
-    anomaly = -0.015 * mintemp - 0.0046 * (mintemp^2) - 0.07 * total_precip + 0.0043 * (total_precip^2) + 0.28
-    return(anomaly)
+    anomaly_value = -0.015 * mintemp - 0.0046 * (mintemp^2) - 0.07 * total_precip + 0.0043 * (total_precip^2) + 0.28
+    return(data.frame(
+      rand_mintemp = mintemp,  # Renamed mintemp
+      rand_total_precip = total_precip,  # Renamed total_precip
+      yield_anomaly = anomaly_value
+    ))
   }
   
   nsamples <- 100
   deviation <- 0.20
-  avg_temp <- mean(data_clim$mintemp)
-  avg_rain <- mean(data_clim$total_precip)
+  avg_temp <- mean(data_clim$mintemp, na.rm = TRUE)
+  avg_rain <- mean(data_clim$total_precip, na.rm = TRUE)
   
   mintemp <- runif(
     min = avg_temp - deviation * avg_temp,
@@ -66,9 +70,39 @@ almond_yield_year <- function(filepath) {
   
   parms <- cbind.data.frame(mintemp, total_precip)
   
-  results <- parms %>% pmap(anomaly)
+  all_results <- list()
+  
+  for(year in unique(data_clim$year)) {
+    
+    # Filter data for the specific year
+    year_data <- data_clim %>% filter(year == year)
+    
+    # Apply the anomaly function to generate results for each parameter sample
+    results <- parms %>%
+      rowwise() %>%
+      mutate(anomaly_result = list(anomaly(mintemp, total_precip))) %>%
+      unnest(anomaly_result)
+    
+    # Add the year to the results
+    year_results <- results %>%
+      mutate(year = year)
+    
+    # Store results in the list
+    all_results[[as.character(year)]] <- year_results
+  }
+  
+  combined_results <- bind_rows(all_results)
+  
+  anomaly_by_year <- ggplot(combined_results, aes(x = as.factor(year), y = yield_anomaly, fill = as.factor(year))) +
+    geom_boxplot() +
+    labs(y = "Yield Anomaly", x = "Year") +
+    theme_minimal() +
+    ggtitle("Yield Anomaly by Year with Uncertainty") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
   
   # 
-  return(results)
+  return(list(results = combined_results, plot = anomaly_by_year))
 }
+
+almond_yield_year("data/clim.txt")
