@@ -1,5 +1,5 @@
-#' A function to return the minimum, maximum, and average almond yield anomaly over a given time series.
-#' This function was created for EDS 230, Environmental Modeling on April 13, 2025.
+#' A function to return the 
+#' This function was created for EDS 230, Environmental Modeling on April 19, 2025.
 #' @author Rachel Swick and Ryan Green
 #'
 #' @param filepath The file path to a `txt` file with climate data for a time series.

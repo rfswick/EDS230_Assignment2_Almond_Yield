@@ -107,10 +107,34 @@ almond_yield_year("data/clim.txt") %>%
 ```
 
 
+```{r}
+yield_anomaly <- function(mintemp, total_precip) {
+  yield_anomaly = -0.015 * mintemp - 0.0046 * (mintemp^2) - 0.07 * total_precip + 0.0043 * (total_precip^2) + 0.28
+  return(yield_anomaly)
+}
+
+data <- read.table("data/clim.txt", header = TRUE, sep = " ")
+
+
+
+nsamples <- 100
+deviation <- 0.20
+avg_temp <- mean(data$)
+
+mintemp <- runif(
+  min = base_thresh - deviation * base_thresh,
+  max = base_thresh + deviation * base_thresh, n = nsamples
+)
+
+total_precip <- rnorm(mean = 0.6, sd = 0.1, n = nsamples)
+```
 
 
 
 
+```{r}
+almond_yield_year("data/clim.txt")
+```
 
 
 

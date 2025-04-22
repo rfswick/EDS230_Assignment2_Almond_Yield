@@ -14,7 +14,7 @@
 #' @export summary_yield_anomaly A table with the minimum, maximum, and average almond yield anomaly for a given time series
 #'
 #' @examples
-#' almond_yield_anomaly("data/clim.txt")
+#' almond_yield_year("data/clim.txt")
 
 almond_yield_year <- function(filepath) {
   
@@ -44,8 +44,31 @@ almond_yield_year <- function(filepath) {
              (mintemp^2) - 0.07 * total_precip + 0.0043 * (total_precip^2) + 0.28) %>% 
     select(year, mintemp, total_precip, yield_anomaly)
   
+  anomaly <- function(mintemp, total_precip) {
+    anomaly = -0.015 * mintemp - 0.0046 * (mintemp^2) - 0.07 * total_precip + 0.0043 * (total_precip^2) + 0.28
+    return(anomaly)
+  }
+  
+  nsamples <- 100
+  deviation <- 0.20
+  avg_temp <- mean(data_clim$mintemp)
+  avg_rain <- mean(data_clim$total_precip)
+  
+  mintemp <- runif(
+    min = avg_temp - deviation * avg_temp,
+    max = avg_temp + deviation * avg_temp, n = nsamples
+  )
+  
+  total_precip <- runif(
+    min = avg_rain - deviation * avg_rain,
+    max = avg_rain + deviation * avg_rain, n = nsamples
+  )
+  
+  parms <- cbind.data.frame(mintemp, total_precip)
+  
+  results <- parms %>% pmap(anomaly)
 
   
-  # Print the summary statistics
-  return(data_clim)
+  # 
+  return(results)
 }
