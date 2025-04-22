@@ -15,6 +15,7 @@ library(ggplot2)
 # Import the almond yield function
 source("almond_yield_anomaly.R")
 source("Anomaly_Profit_Function.R")
+source("Almond_Profit_Function.R")
 ```
 
 Develop a profit model for your almond yield
@@ -27,26 +28,9 @@ As of 2/04/25, California Almonds sell for $2.12 a pound according to the Melo F
 70% of almond farms in California are 100 acres or less according to the Almond Board of California.
 According to Fruit Growers Supply, one acre of almond orchard produces 2400 lbs of almonds per year
 
-Parameters
-Current Price of Almonds in dollars: Set default value at $2.12
-Size of Farm in acres: Set default value at 100 acres
-
-Input
-Almond Yield per Acre: Set default value at 2400 lbs of almonds per year (1.2 tons/acre)
-
-Add almond yield anomaly function
-
-Convert pounds to tons, 1 ton is 2000 lbs
-
 
 ```{r}
-almond_profit <- function(almond_price = 4240, farm_acreage = 100, acre_yield = 1.2, filepath) {
-  profit = almond_price * farm_acreage * (acre_yield + almond_yield_anomaly(filepath))
-  return(profit)
-}
-```
-
-```{r}
+# Run the Almond Profit Function
 almond_profit(filepath = "data/clim.txt")
 ```
 
@@ -100,52 +84,16 @@ ggplot(grid_df, aes(x = factor(acre_yield), y = profit$min_yield, fill = factor(
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-```{r}
-almond_yield_year("data/clim.txt")
-
-  ggplot(aes(x = year, y = yield_anomaly)) +
-  geom_line()
-```
-
-```{r}
-almond_yield_year("data/clim.txt") %>% 
-
-  ggplot(aes(x = year, y = yield_anomaly)) +
-  geom_line()
-```
-
-```{r}
-yield_anomaly <- function(mintemp, total_precip) {
-  yield_anomaly = -0.015 * mintemp - 0.0046 * (mintemp^2) - 0.07 * total_precip + 0.0043 * (total_precip^2) + 0.28
-  return(yield_anomaly)
-}
-
-data <- read.table("data/clim.txt", header = TRUE, sep = " ")
-
-
-
-nsamples <- 100
-deviation <- 0.20
-avg_temp <- mean(data$)
-
-mintemp <- runif(
-  min = base_thresh - deviation * base_thresh,
-  max = base_thresh + deviation * base_thresh, n = nsamples
-)
-
-total_precip <- rnorm(mean = 0.6, sd = 0.1, n = nsamples)
-```
-
-
 
 
 ```{r}
+# Run the Almond yield anomaly by year
 almond_yield_year("data/clim.txt")
 ```
 
 
 
-
+The most significant thing I take away from my model results and sensitivity analysis, is that the further the anomaly is from the average, the more sensitive that anomaly is. For instance, in 1995, the anomaly is calculate to be almost 2000 tons per acre. This is an absurd number and suggests something is wrong with the climate data from that year. This is further bolstered by the sensitivity analysis which showed a large potential spread of anomaly values, much larger than other years with smaller anomalies. 
 
 
 

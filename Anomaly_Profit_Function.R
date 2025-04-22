@@ -1,5 +1,5 @@
-#' A function to return the minimum, maximum, and average almond yield anomaly over a given time series.
-#' This function was created for EDS 230, Environmental Modeling on April 13, 2025.
+#' A function to return the almond yield anomalies year over year for a given time series.
+#' This function was created for EDS 230, Environmental Modeling on April 21, 2025.
 #' @author Rachel Swick and Ryan Green
 #'
 #' @param filepath The file path to a `txt` file with climate data for a time series.
@@ -11,7 +11,8 @@
 #' @field precip amount of precipitation per day in millimeters, numeric
 #'
 #' @return
-#' @export summary_yield_anomaly A table with the minimum, maximum, and average almond yield anomaly for a given time series
+#' @export results A table with the almond yield anomaly results from the informal sensitivity analysis
+#' @export plot A plot of the almond yield anomalies with uncertainty
 #'
 #' @examples
 #' almond_yield_year("data/clim.txt")
@@ -44,30 +45,20 @@ almond_yield_year <- function(filepath) {
              (mintemp^2) - 0.07 * total_precip + 0.0043 * (total_precip^2) + 0.28) %>% 
     select(year, mintemp, total_precip, yield_anomaly)
   
+  # Create a sub-function to calculate anomalies for the informal sensitvity analysis
   compute_anomaly <- function(temp, precip) {
     -0.015 * temp - 0.0046 * temp^2 - 0.07 * precip + 0.0043 * precip^2 + 0.28
   }
   
+  # Number of samples
   nsamples <- 100
+  
+  # 20% variation
   deviation <- 0.20
-#  avg_temp <- mean(data_clim$mintemp, na.rm = TRUE)
-#  avg_rain <- mean(data_clim$total_precip, na.rm = TRUE)
   
-#  mintemp <- runif(
-#    min = avg_temp - deviation * avg_temp,
-#    max = avg_temp + deviation * avg_temp,
-#    n = nsamples
-#  )
-  
-#  total_precip <- runif(
-#    min = avg_rain - deviation * avg_rain,
-#    max = avg_rain + deviation * avg_rain,
-#    n = nsamples
-#  )
-  
-#  parms <- cbind.data.frame(mintemp, total_precip)
-  
+  # Set a list to store anomaly values from the sensitivity analysis
   all_anomalies <- list()
+  
   
   for (i in 1:nrow(data_clim)) {
     year_row <- data_clim[i, ]
@@ -75,7 +66,7 @@ almond_yield_year <- function(filepath) {
     tmin <- year_row$mintemp
     precip <- year_row$total_precip
     
-    # Create perturbations around that year's values
+    # Create uncertainities around that year's values
     tmin_samples <- runif(nsamples - 1, tmin * (1 - deviation), tmin * (1 + deviation))
     precip_samples <- runif(nsamples - 1, precip * (1 - deviation), precip * (1 + deviation))
     
@@ -99,10 +90,7 @@ almond_yield_year <- function(filepath) {
     ggtitle("Yield Anomaly by Year with Uncertainty") +
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
   
-  # 
+  # Return the results of the informal sensitivity analysis and the graph of anomalies year over year
   return(list(results = combined_results, plot = anomaly_by_year))
 }
-
-almond_yield_year("data/clim.txt")
