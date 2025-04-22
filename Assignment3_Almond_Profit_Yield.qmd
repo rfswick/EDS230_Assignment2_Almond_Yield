@@ -3,6 +3,8 @@ title: "Assignment 3: Profit with Almond Yield"
 author: "Rachel Swick & Ryan Green"
 date: 19-Apr-2025
 format: html
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r}
@@ -46,10 +48,46 @@ almond_profit <- function(almond_price = 4240, farm_acreage = 100, acre_yield = 
 almond_profit(filepath = "data/clim.txt")
 ```
 
+```{r}
+almond_price_input <- 4200
+acre_yield_input <- 1.2
+farm_acreage <- 100
+clim_file <- "data/clim.txt"
+
+price_seq <- seq(almond_price_input * 0.8,
+                 almond_price_input * 1.2,
+                 length.out = 3)
+
+yield_seq <- seq(acre_yield_input * 0.8,
+                 acre_yield_input * 1.2,
+                 length.out = 3)
+
+```
+
+```{r}
+grid_df <- expand.grid(
+  almond_price = price_seq,
+  acre_yield = yield_seq) %>%
+  rowwise() %>%
+  mutate(profit = almond_profit(
+      almond_price = almond_price,
+      farm_acreage = farm_acreage,
+      acre_yield = acre_yield,
+      filepath = clim_file)) %>%
+  ungroup()
+
+head(grid_df)
 
 
+```
 
-
+```{r}
+ggplot(grid_df, aes(x = factor(acre_yield), y = profit$min_yield, fill = factor(almond_price))) +
+  geom_col(position = 'dodge') +
+  labs(x = 'Acreage',
+       y = 'Profit Yield',
+       title = 'Sensitivity Analysis on Almond Profits\n+/- 20% Acreage and Almond Price')
+```
 
 
 

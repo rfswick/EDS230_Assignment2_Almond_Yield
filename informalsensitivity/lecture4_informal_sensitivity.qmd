@@ -39,7 +39,7 @@ solarpv(area = 0.1, solar = sierraczosolar, clr = "green", eunit = "W")
 
 There is a threshold radiation below which efficiency declines
 
-- Last class we used *eff*
+-   Last class we used *eff*
 
 -   Assume +-15% uncertainty in *ethresh* parameter (uniform distribution)
 
@@ -47,8 +47,7 @@ There is a threshold radiation below which efficiency declines
 
 -   Code so that its easy to change the uncertainty
 
--  Think about a data structure to allow us to see how uncertainty impacts annual power estimation for each year, or mean annual power generation
-
+-   Think about a data structure to allow us to see how uncertainty impacts annual power estimation for each year, or mean annual power generation
 
 ```{r ethresh, echo=TRUE}
 # lets try sensitivity analysis again,
@@ -198,13 +197,13 @@ save(solar_annual_elect, file = here("Data/annual_elect_solar.rda"))
 
 -   note the linear response to *eff*
 
-
 ## plot
+
 ```{r}
 ggarrange(p1, p2)
 ```
 
-## Additional notes {.scrollable} 
+## Additional notes {.scrollable}
 
 Using a *For* Loop for sensitivity analysis
 
@@ -247,7 +246,6 @@ ggplot(tmp, aes(as.factor(year), value)) +
   labs(y = "Mean Annual Electricity W", x = "Year")
 ```
 
-
 # Before next Tuesday I'll add a part 2 to this lecture
 
- In preparation, go through informal_sensitivity.qmd and informal_sensitivity2.qmd make sure you understand the code
+In preparation, go through informal_sensitivity.qmd and informal_sensitivity2.qmd make sure you understand the code
