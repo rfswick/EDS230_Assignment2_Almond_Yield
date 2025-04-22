@@ -93,7 +93,6 @@ head(grid_df)
 # Plotting Profit Yield by Variation in Acreage and Almond Price
 ggplot(grid_df, aes(x = factor(acre_yield), y = profit$min_yield, fill = factor(almond_price))) +
   geom_col(position = "dodge") +
-  scale_y_continuous(labels = comma) +
   scale_fill_brewer(palette = "Paired", name = "Almond Price\nper Ton") +
   labs(x = "Acre Yield", y = "Profit Yield (USD)", 
        title = "Sensitivity Analysis on Almond Profits\n+/- 20% Acreage and Almond Price in USD") +
