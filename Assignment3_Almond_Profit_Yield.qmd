@@ -4,7 +4,7 @@ author: "Rachel Swick & Ryan Green"
 date: 19-Apr-2025
 format: html
 editor_options: 
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 
 ```{r}
@@ -50,15 +50,20 @@ almond_profit(filepath = "data/clim.txt")
 ```
 
 ```{r}
+# Sensitivity Analysis on Profit Yield
+# Accounting for Variation in Almond Price per Ton and in Yield per Acre, with a 20% variation for each
+
 almond_price_input <- 4240
 acre_yield_input <- 1.2
 farm_acreage <- 100
 clim_file <- "data/clim.txt"
 
+# Parameter 1: Almond Price per Ton
 price_seq <- seq(almond_price_input * 0.8,
                  almond_price_input * 1.2,
                  length.out = 3)
 
+# Parameter 2: Yield per Acre
 yield_seq <- seq(acre_yield_input * 0.8,
                  acre_yield_input * 1.2,
                  length.out = 3)
@@ -66,6 +71,7 @@ yield_seq <- seq(acre_yield_input * 0.8,
 ```
 
 ```{r}
+# Using `expand.grid` to take into account all factor variables
 grid_df <- expand.grid(
   almond_price = price_seq,
   acre_yield = yield_seq) %>%
@@ -83,13 +89,16 @@ head(grid_df)
 ```
 
 ```{r}
+# Plotting Profit Yield by Variation in Acreage and Almond Price
 ggplot(grid_df, aes(x = factor(acre_yield), y = profit$min_yield, fill = factor(almond_price))) +
-  geom_col(position = 'dodge') +
-  labs(x = 'Acreage',
-       y = 'Profit Yield',
-       title = 'Sensitivity Analysis on Almond Profits\n+/- 20% Acreage and Almond Price')
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = comma) +
+  scale_fill_brewer(palette = "Paired", name = "Almond Price\nper Ton") +
+  labs(x = "Acre Yield", y = "Profit Yield (USD)", 
+       title = "Sensitivity Analysis on Almond Profits\n+/- 20% Acreage and Almond Price in USD") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
-
 
 ```{r}
 almond_yield_year("data/clim.txt")
@@ -98,14 +107,12 @@ almond_yield_year("data/clim.txt")
   geom_line()
 ```
 
-
 ```{r}
 almond_yield_year("data/clim.txt") %>% 
 
   ggplot(aes(x = year, y = yield_anomaly)) +
   geom_line()
 ```
-
 
 ```{r}
 yield_anomaly <- function(mintemp, total_precip) {
