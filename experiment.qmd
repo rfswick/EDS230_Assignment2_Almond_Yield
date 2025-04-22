@@ -1,0 +1,61 @@
+---
+title: "experiment"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+# Load packages
+library(tidyverse)
+
+# Import the almond yield function
+source("almond_yield_anomaly.R")
+source("Anomaly_Profit_Function.R")
+```
+
+```{r}
+almond_profit <- function(almond_price = 4240, farm_acreage = 100, acre_yield = 1.2, filepath) {
+  profit = almond_price * farm_acreage * (acre_yield + almond_yield_anomaly(filepath))
+  return(profit)
+}
+```
+
+```{r}
+almond_profit(filepath = "data/clim.txt")
+almond_profit_data <- almond_profit(filepath = "data/clim.txt")
+```
+
+```{r}
+nsamples <- 100
+deviation <- 0.25
+base_price <- 4240
+price_thresh <- runif(
+  min = base_price - (deviation * base_price),
+  max = base_price + (deviation * base_price), n = nsamples)
+```
+
+```{r}
+nsamples <- 100
+deviation <- 100
+default_acreage <- 100
+acreages <- sample(
+  (default_acreage + 100):(default_acreage - 100),
+  size = nsamples,
+  replace = TRUE
+)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
