@@ -44,60 +44,60 @@ almond_yield_year <- function(filepath) {
              (mintemp^2) - 0.07 * total_precip + 0.0043 * (total_precip^2) + 0.28) %>% 
     select(year, mintemp, total_precip, yield_anomaly)
   
-  anomaly <- function(mintemp, total_precip) {
-    anomaly_value = -0.015 * mintemp - 0.0046 * (mintemp^2) - 0.07 * total_precip + 0.0043 * (total_precip^2) + 0.28
-    return(data.frame(
-      rand_mintemp = mintemp,  # Renamed mintemp
-      rand_total_precip = total_precip,  # Renamed total_precip
-      yield_anomaly = anomaly_value
-    ))
+  compute_anomaly <- function(temp, precip) {
+    -0.015 * temp - 0.0046 * temp^2 - 0.07 * precip + 0.0043 * precip^2 + 0.28
   }
   
   nsamples <- 100
   deviation <- 0.20
-  avg_temp <- mean(data_clim$mintemp, na.rm = TRUE)
-  avg_rain <- mean(data_clim$total_precip, na.rm = TRUE)
+#  avg_temp <- mean(data_clim$mintemp, na.rm = TRUE)
+#  avg_rain <- mean(data_clim$total_precip, na.rm = TRUE)
   
-  mintemp <- runif(
-    min = avg_temp - deviation * avg_temp,
-    max = avg_temp + deviation * avg_temp, n = nsamples
-  )
+#  mintemp <- runif(
+#    min = avg_temp - deviation * avg_temp,
+#    max = avg_temp + deviation * avg_temp,
+#    n = nsamples
+#  )
   
-  total_precip <- runif(
-    min = avg_rain - deviation * avg_rain,
-    max = avg_rain + deviation * avg_rain, n = nsamples
-  )
+#  total_precip <- runif(
+#    min = avg_rain - deviation * avg_rain,
+#    max = avg_rain + deviation * avg_rain,
+#    n = nsamples
+#  )
   
-  parms <- cbind.data.frame(mintemp, total_precip)
+#  parms <- cbind.data.frame(mintemp, total_precip)
   
-  all_results <- list()
+  all_anomalies <- list()
   
-  for(year in unique(data_clim$year)) {
+  for (i in 1:nrow(data_clim)) {
+    year_row <- data_clim[i, ]
+    year <- year_row$year
+    tmin <- year_row$mintemp
+    precip <- year_row$total_precip
     
-    # Filter data for the specific year
-    year_data <- data_clim %>% filter(year == year)
+    # Create perturbations around that year's values
+    tmin_samples <- runif(nsamples - 1, tmin * (1 - deviation), tmin * (1 + deviation))
+    precip_samples <- runif(nsamples - 1, precip * (1 - deviation), precip * (1 + deviation))
     
-    # Apply the anomaly function to generate results for each parameter sample
-    results <- parms %>%
-      rowwise() %>%
-      mutate(anomaly_result = list(anomaly(mintemp, total_precip))) %>%
-      unnest(anomaly_result)
+    # Include original values as one sample
+    tmin_samples <- c(tmin_samples, tmin)
+    precip_samples <- c(precip_samples, precip)
     
-    # Add the year to the results
-    year_results <- results %>%
-      mutate(year = year)
+    # Calculate anomalies
+    anomalies <- compute_anomaly(tmin_samples, precip_samples)
     
-    # Store results in the list
-    all_results[[as.character(year)]] <- year_results
+    # Store with year
+    all_anomalies[[as.character(year)]] <- data.frame(year = year, yield_anomaly = anomalies)
   }
   
-  combined_results <- bind_rows(all_results)
+  combined_results <- bind_rows(all_anomalies)
   
-  anomaly_by_year <- ggplot(combined_results, aes(x = as.factor(year), y = yield_anomaly, fill = as.factor(year))) +
-    geom_boxplot() +
+  # Plot
+  anomaly_by_year <- ggplot(combined_results, aes(x = as.factor(year), y = yield_anomaly)) +
+    geom_boxplot(fill = "steelblue", alpha = 0.7) +
     labs(y = "Yield Anomaly", x = "Year") +
-    theme_minimal() +
     ggtitle("Yield Anomaly by Year with Uncertainty") +
+    theme_minimal() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
   
