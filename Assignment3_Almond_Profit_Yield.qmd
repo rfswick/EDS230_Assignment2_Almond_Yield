@@ -4,7 +4,7 @@ author: "Rachel Swick & Ryan Green"
 date: 19-Apr-2025
 format: html
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ```{r}
@@ -13,6 +13,7 @@ library(tidyverse)
 
 # Import the almond yield function
 source("almond_yield_anomaly.R")
+source("Anomaly_Profit_Function.R")
 ```
 
 Develop a profit model for your almond yield
@@ -49,7 +50,7 @@ almond_profit(filepath = "data/clim.txt")
 ```
 
 ```{r}
-almond_price_input <- 4200
+almond_price_input <- 4240
 acre_yield_input <- 1.2
 farm_acreage <- 100
 clim_file <- "data/clim.txt"
@@ -90,8 +91,20 @@ ggplot(grid_df, aes(x = factor(acre_yield), y = profit$min_yield, fill = factor(
 ```
 
 
+```{r}
+almond_yield_year("data/clim.txt")
+
+  ggplot(aes(x = year, y = yield_anomaly)) +
+  geom_line()
+```
 
 
+```{r}
+almond_yield_year("data/clim.txt") %>% 
+
+  ggplot(aes(x = year, y = yield_anomaly)) +
+  geom_line()
+```
 
 
 
