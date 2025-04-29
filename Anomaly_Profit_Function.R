@@ -92,5 +92,5 @@ almond_yield_year <- function(filepath) {
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
   
   # Return the results of the informal sensitivity analysis and the graph of anomalies year over year
-  return(list(results = combined_results, plot = anomaly_by_year))
+  return(list(results = head(combined_results), plot = anomaly_by_year))
 }
